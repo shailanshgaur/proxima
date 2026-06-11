@@ -1,0 +1,336 @@
+PROXIMA DEPLOYMENT AUTOMATION SUITE - FILE MANIFEST
+====================================================
+
+Created: 2026-06-12
+Project: Proxima (zing-connect) - Hyperlocal Service Marketplace
+Location: /Users/shailanshgaur/LZ Project/Proxima/scripts/
+
+EXECUTABLE SCRIPTS
+==================
+
+deploy.sh
+  - Main deployment automation script
+  - Performs pre-deployment checks, builds, deploys to Vercel, smoke tests
+  - Usage: ./scripts/deploy.sh [--dry-run] [--force] [--skip-tests]
+  - Exit codes: 0-5 (see documentation)
+  - Logs to: .deploy-logs/deployment-YYYYMMDD-HHMMSS.log
+  - Size: ~750 lines
+  - Status: Production-ready
+
+health-check.sh
+  - Health verification utility
+  - Checks HTTP status, response time, content verification
+  - Usage: ./scripts/health-check.sh [--verbose] [--endpoint <url>]
+  - Exit codes: 0, 1-2
+  - Time: 10-30 seconds
+  - Size: ~100 lines
+  - Status: Production-ready
+
+DOCUMENTATION FILES
+===================
+
+INDEX.md
+  - Master index and navigation guide
+  - Complete file listing with descriptions
+  - Navigation by use case
+  - Support matrix
+  - ~300 lines
+
+README.md
+  - Scripts overview and quick start
+  - File listing and key features
+  - Common commands and exit codes
+  - Team workflow and troubleshooting
+  - Size: ~200 lines
+  - Best for: Onboarding and quick reference
+
+DEPLOY_QUICK_REF.txt
+  - One-page quick reference card
+  - Common commands cheat sheet
+  - What each step does (brief)
+  - Common issues quick fixes
+  - Team workflow summary
+  - Size: ~200 lines
+  - Best for: Experienced users, quick lookups
+
+DEPLOY_README.md
+  - Complete deployment guide
+  - Detailed explanation of each phase
+  - Exit codes and meanings
+  - Log file locations and examples
+  - Comprehensive troubleshooting section
+  - Manual deployment procedures
+  - Vercel integration details
+  - Size: ~400 lines
+  - Best for: Learning details, debugging issues
+
+DEPLOYMENT_SETUP.md
+  - Setup and integration guide
+  - Deployment flow diagrams
+  - Safety features explained
+  - Vercel integration requirements
+  - Logging and log rotation
+  - Prerequisites and installation
+  - Usage examples
+  - Security considerations
+  - Next steps checklist
+  - Size: ~500 lines
+  - Best for: Initial setup, integration questions
+
+deploy-checklist.md
+  - Pre-deployment verification checklist
+  - Code quality checks
+  - Security and data validation
+  - Testing requirements
+  - Git status verification
+  - Post-deployment verification
+  - Rollback procedure documentation
+  - Size: ~100 lines
+  - Best for: Before every deployment
+
+TEST_DEPLOYMENT.md
+  - Testing and validation guide
+  - 10 detailed test scenarios
+  - Expected outputs for each test
+  - Error handling tests
+  - Performance testing procedures
+  - Production readiness checklist
+  - Debugging failed tests
+  - Size: ~400 lines
+  - Best for: Validating scripts, testing changes
+
+github-workflows-deploy.yml
+  - GitHub Actions workflow template
+  - Automatic deployment CI/CD
+  - Setup instructions
+  - Environment variable setup
+  - Monitoring and logging
+  - Optional Slack notifications
+  - Size: ~200 lines
+  - Best for: Automated CI/CD deployments
+
+DEPLOYMENT_SETUP.md (this file)
+  - File manifest and complete index
+  - File purposes and locations
+  - Navigation guide
+  - Size: ~300 lines (this file)
+
+TOTAL FILES CREATED: 11
+TOTAL LINES: ~3,500+
+TOTAL SIZE: ~250KB
+
+FILE TREE
+=========
+
+scripts/
+├── deploy.sh                    ✓ EXECUTABLE
+├── health-check.sh              ✓ EXECUTABLE
+├── README.md                    Documentation
+├── INDEX.md                     Documentation (master index)
+├── DEPLOY_QUICK_REF.txt         Documentation (1-page reference)
+├── DEPLOY_README.md             Documentation (complete guide)
+├── DEPLOYMENT_SETUP.md          Documentation (setup guide)
+├── deploy-checklist.md          Documentation (pre-deploy checklist)
+├── TEST_DEPLOYMENT.md           Documentation (testing guide)
+├── github-workflows-deploy.yml  Configuration template
+└── MANIFEST.txt                 This file
+
+READING ORDER FOR NEW USERS
+============================
+
+1. DEPLOY_QUICK_REF.txt     (2 min)   - Get oriented
+2. deploy-checklist.md      (5 min)   - Learn requirements
+3. deploy.sh --dry-run      (5 min)   - Test safely
+4. deploy.sh                (5 min)   - First deployment
+5. health-check.sh          (1 min)   - Verify success
+
+Total: 18 minutes to first deployment
+
+READING ORDER FOR COMPLETE UNDERSTANDING
+==========================================
+
+1. README.md                      (5 min)   - Overview
+2. DEPLOY_QUICK_REF.txt          (5 min)   - Quick commands
+3. DEPLOY_README.md              (15 min)  - Detailed guide
+4. DEPLOYMENT_SETUP.md           (20 min)  - Setup & integration
+5. TEST_DEPLOYMENT.md            (15 min)  - Testing procedures
+6. deploy-checklist.md           (5 min)   - Verification checklist
+7. github-workflows-deploy.yml   (10 min)  - CI/CD setup
+
+Total: 75 minutes for complete mastery
+
+QUICK ACCESS REFERENCE
+======================
+
+For...                          See...
+Quick commands                  DEPLOY_QUICK_REF.txt
+Deployment overview             README.md
+Complete guide                  DEPLOY_README.md
+Setup & integration             DEPLOYMENT_SETUP.md
+Pre-deploy checklist            deploy-checklist.md
+Testing procedures              TEST_DEPLOYMENT.md
+CI/CD automation                github-workflows-deploy.yml
+File navigation                 INDEX.md
+This manifest                   MANIFEST.txt
+
+FEATURES IMPLEMENTED
+====================
+
+✓ Pre-deployment safety checks (git status, prerequisites)
+✓ TypeScript compilation verification
+✓ Vite build validation
+✓ Vercel deployment via git push
+✓ Post-deployment smoke tests (health checks, content verification)
+✓ Automatic rollback on failure
+✓ Comprehensive logging with rotation
+✓ Clear error messages
+✓ Support for flags: --dry-run, --force, --skip-tests
+✓ Exit codes for CI/CD integration (0-5)
+✓ Health check utility script
+✓ GitHub Actions workflow template
+✓ Complete documentation suite
+✓ Team onboarding materials
+✓ Troubleshooting guides
+✓ Testing and validation guides
+
+SAFETY FEATURES
+===============
+
+✓ Blocks deployment if git is dirty
+✓ Refuses deployment from non-main branches
+✓ Verifies all prerequisites installed
+✓ Ensures TypeScript passes strict mode
+✓ Validates Vite build succeeds
+✓ Uses git push (reversible via git revert)
+✓ Post-deployment health checks
+✓ 5 retries with 3-second intervals for stability
+✓ Automatic rollback prompt on failure
+✓ Comprehensive audit logging
+✓ Log rotation (keeps last 10 deployments)
+
+DEPLOYMENT TIMELINE
+===================
+
+Phase                    Time    Status
+Pre-deployment checks    30s     Fast (git status, prerequisites)
+TypeScript check         20-40s  Varies (number of files)
+Vite build              30-60s  Varies (complexity)
+Vercel deployment       5-30s   Fast (git push)
+Wait for Vercel build   30s     Fixed wait
+Smoke tests            30-60s   Variable (retries)
+─────────────────────────────
+TOTAL                   3-5 min  Typical total
+
+PERFORMANCE CHARACTERISTICS
+===========================
+
+Metric              Value           Notes
+Deployment time     3-5 minutes     Typical, predictable
+Build time          60-120s         Depends on project size
+Smoke test time     30-60s          Includes retries
+Rollback time       30-60s          Fast if needed
+Log rotation        Automatic       Every 10+ deployments
+Max retries         5               Health check attempts
+Retry interval      3s              Health check spacing
+Max deploy wait     5 min           Total script timeout
+
+PREREQUISITES
+=============
+
+Required commands:
+  ✓ git       (version control)
+  ✓ npm       (package management)
+  ✓ curl      (HTTP requests)
+  ✓ tsc       (TypeScript compiler)
+  ✓ bash      (shell)
+
+Required services:
+  ✓ GitHub    (git hosting)
+  ✓ Vercel    (deployment platform)
+  ✓ Supabase  (backend)
+
+Configuration needed:
+  ✓ GitHub remote configured
+  ✓ Vercel project linked
+  ✓ Environment variables set in Vercel
+
+INTEGRATION POINTS
+==================
+
+With Vercel:
+  - git push origin main triggers Vercel deployment
+  - Vercel build status checked via health test
+  - App URL: https://zing-connect.vercel.app
+
+With GitHub:
+  - Can integrate GitHub Actions workflow template
+  - Optional automatic deploys on push to main
+  - Deployment logs linked in Actions tab
+
+With CI/CD:
+  - Exit codes support automated pipelines
+  - Logs uploadable to artifact storage
+  - Slack notifications optional
+
+TROUBLESHOOTING QUICK LINKS
+===========================
+
+Issue                           Solution
+Working tree not clean         commit changes, use --force
+TypeScript compilation failed  npm exec tsc --noEmit, fix errors
+Build failed                   npm run build, check errors
+Git push failed                Check credentials, verify remote
+Health check failed            Wait 2 min, Vercel still building
+App not responding             Check Vercel dashboard
+Need to rollback               Choose option 1 (automatic revert)
+
+See DEPLOY_README.md for detailed troubleshooting
+
+SUPPORT & CONTACT
+=================
+
+For questions about:
+  - Quick commands          → DEPLOY_QUICK_REF.txt
+  - Overview               → README.md
+  - Detailed explanations  → DEPLOY_README.md
+  - Setup issues           → DEPLOYMENT_SETUP.md
+  - Testing                → TEST_DEPLOYMENT.md
+  - Pre-deployment checks  → deploy-checklist.md
+
+MAINTENANCE NOTES
+=================
+
+Last updated: 2026-06-12
+Version: 1.0 (Initial release)
+Status: Production-ready
+Compatibility: macOS, Linux
+Node version: 18+ (recommended)
+npm version: 9+ (recommended)
+
+Future improvements:
+  - Integration with monitoring services (Sentry, DataDog)
+  - Automated database migration checks
+  - Multi-region deployment support
+  - Canary deployment strategy
+  - A/B testing framework
+
+COMPLIANCE & AUDIT
+==================
+
+All deployments logged for:
+  ✓ Audit trail (who deployed what when)
+  ✓ Rollback capability (revert any deployment)
+  ✓ Error tracking (diagnose issues)
+  ✓ Performance monitoring (deployment time)
+  ✓ Security compliance (no secrets in logs)
+
+Log retention: Last 10 deployments (auto-rotates)
+Log location: .deploy-logs/deployment-*.log
+Log format: Timestamp, level (INFO/SUCCESS/WARN/ERROR), message
+
+===================================================
+End of Manifest
+Created: 2026-06-12
+Project: Proxima - Hyperlocal Service Marketplace
+Status: Complete and production-ready
+===================================================

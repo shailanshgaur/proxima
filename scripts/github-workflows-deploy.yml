@@ -1,0 +1,233 @@
+# GitHub Actions Workflow Template for Deployment
+# Copy this to: .github/workflows/deploy.yml
+#
+# This workflow can optionally use the deploy.sh script for consistency
+# between local and CI/CD deployments
+#
+# Trigger: Push to main branch
+# Action: Build, test, and deploy to Vercel
+
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git operations
+
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+        env:
+          CI: true
+
+      # 4. TypeScript check
+      - name: TypeScript type check
+        run: npm exec tsc --noEmit
+
+      # 5. Build
+      - name: Build application
+        run: npm run build
+        env:
+          CI: true
+
+      # 6. Upload build artifact (optional)
+      - name: Upload build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+      # 7. Deploy to Vercel
+      - name: Deploy to Vercel
+        uses: vercel/action@main
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./
+          production: true
+
+      # 8. Smoke test (optional)
+      - name: Smoke test - Health check
+        run: |
+          echo "Waiting for deployment to complete..."
+          sleep 30
+
+          APP_URL="https://zing-connect.vercel.app"
+          MAX_RETRIES=5
+          RETRY_INTERVAL=5
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✓ Health check passed (HTTP $HTTP_CODE)"
+              exit 0
+            fi
+            echo "Attempt $i/$MAX_RETRIES: HTTP $HTTP_CODE - retrying in ${RETRY_INTERVAL}s..."
+            if [ $i -lt $MAX_RETRIES ]; then
+              sleep $RETRY_INTERVAL
+            fi
+          done
+
+          echo "✗ Health check failed after $MAX_RETRIES attempts"
+          exit 1
+
+      # 9. Post deployment summary
+      - name: Deployment summary
+        if: success()
+        run: |
+          echo "## Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL:** https://zing-connect.vercel.app" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+
+      # 10. Error notification (optional)
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Deployment failed. Check [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).'
+            })
+
+---
+
+# ALTERNATIVE: Using deploy.sh script
+#
+# name: Deploy with Script
+# on:
+#   push:
+#     branches: [main, master]
+#
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: '18'
+#           cache: 'npm'
+#
+#       - name: Install dependencies
+#         run: npm ci
+#
+#       - name: Run deployment script
+#         run: bash ./scripts/deploy.sh
+#         env:
+#           GIT_AUTHOR_NAME: "GitHub Actions"
+#           GIT_AUTHOR_EMAIL: "actions@github.com"
+#           GIT_COMMITTER_NAME: "GitHub Actions"
+#           GIT_COMMITTER_EMAIL: "actions@github.com"
+#
+#       - name: Upload logs
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: deployment-logs
+#           path: .deploy-logs/
+
+---
+
+# Setup Instructions:
+#
+# 1. Create GitHub Actions workflow file:
+#    $ mkdir -p .github/workflows
+#    $ cp scripts/github-workflows-deploy.yml .github/workflows/deploy.yml
+#
+# 2. Set required secrets in GitHub:
+#    - VERCEL_TOKEN: Get from https://vercel.com/account/tokens
+#    - VERCEL_ORG_ID: From Vercel dashboard
+#    - VERCEL_PROJECT_ID: From Vercel project settings
+#
+#    Steps:
+#    a) Go to repo Settings → Secrets and variables → Actions
+#    b) Click "New repository secret"
+#    c) Add VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+#
+# 3. Commit and push:
+#    $ git add .github/workflows/deploy.yml
+#    $ git commit -m "Add GitHub Actions deployment workflow"
+#    $ git push origin main
+#
+# 4. Verify:
+#    - Go to Actions tab in GitHub
+#    - Watch workflow run on next push to main
+#    - Check Vercel dashboard for deployment
+
+---
+
+# Environment Setup:
+#
+# The workflow needs access to Vercel. Set these secrets:
+#
+# VERCEL_TOKEN:
+#   - Go to: https://vercel.com/account/tokens
+#   - Create new token (full scope)
+#   - Copy and paste in GitHub Secrets
+#
+# VERCEL_ORG_ID:
+#   - Go to: https://vercel.com/account/settings
+#   - Look for "Organization ID" or "Team ID"
+#   - Copy value
+#
+# VERCEL_PROJECT_ID:
+#   - Go to: https://vercel.com/dashboard
+#   - Select project (zing-connect)
+#   - Settings → General
+#   - Look for "Project ID"
+#   - Copy value
+
+---
+
+# Monitoring:
+#
+# View workflow status:
+#   - GitHub: Actions tab → Deploy to Vercel
+#   - Vercel: https://vercel.com/dashboard → Deployments
+#   - Logs: Actions → Run details → Deployment logs
+
+# Manual trigger (optional):
+#   - GitHub Actions tab → Deploy to Vercel → Run workflow
+#   - Select branch and run (no push needed)
+
+# Slack notifications (optional):
+#   Add this step to send notifications:
+#
+#   - name: Notify Slack
+#     if: always()
+#     uses: 8398a7/action-slack@v3
+#     with:
+#       status: ${{ job.status }}
+#       text: 'Deployment to Vercel ${{ job.status }}'
+#       webhook_url: ${{ secrets.SLACK_WEBHOOK }}

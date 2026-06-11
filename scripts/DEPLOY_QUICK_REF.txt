@@ -1,0 +1,205 @@
+================================================================================
+PROXIMA DEPLOYMENT QUICK REFERENCE CARD
+================================================================================
+
+NORMAL DEPLOYMENT:
+  $ ./scripts/deploy.sh
+
+FLAGS:
+  --dry-run       Simulate without pushing
+  --force         Skip git status check
+  --skip-tests    Skip build verification (not recommended)
+
+EXAMPLES:
+  ./scripts/deploy.sh --dry-run      # Test run (no push to Vercel)
+  ./scripts/deploy.sh --force        # Skip checks (caution!)
+  ./scripts/deploy.sh --skip-tests   # No build validation
+
+================================================================================
+WHAT IT DOES (Automatic)
+================================================================================
+
+1. PRE-FLIGHT (30s)
+   ✓ Git branch is main/master?
+   ✓ No uncommitted changes?
+   ✓ Required commands installed?
+
+2. BUILD (60s)
+   ✓ TypeScript passes (tsc --noEmit)
+   ✓ Vite build succeeds (npm run build)
+   ✓ dist/ directory created
+
+3. DEPLOY (30s)
+   ✓ git push origin main → Vercel auto-builds
+
+4. SMOKE TESTS (60s)
+   ✓ App HTTP 200 response
+   ✓ Homepage loads content
+   ✓ Error logs clean
+
+5. COMPLETE
+   ✓ Summary report + logs
+   ✗ If failed: Offer rollback
+
+TOTAL TIME: 3-5 minutes
+
+================================================================================
+IF IT FAILS
+================================================================================
+
+Press "1" to AUTO-ROLLBACK:
+  - Reverts previous commit
+  - Pushes revert
+  - Redeploys old version
+  - Takes 30 seconds
+
+Press "2" to VIEW LOGS:
+  - Shows last 50 log lines
+  - Helps diagnose issue
+  - Then reprompt for rollback
+
+Press "3" to SKIP:
+  - No rollback (manual fix needed)
+  - Check logs manually
+  - Investigate root cause
+  - Redeploy when ready
+
+EXIT CODES:
+  0 = Success
+  1 = Pre-deploy checks failed
+  2 = Build failed
+  3 = Git push failed
+  4 = Smoke tests failed
+
+================================================================================
+COMMON ISSUES
+================================================================================
+
+"Working tree is not clean"
+  Fix: git add . && git commit -m "message"
+  Then: ./scripts/deploy.sh
+
+"TypeScript compilation failed"
+  Fix: Check tsc errors, fix files
+  Then: ./scripts/deploy.sh
+
+"Build failed"
+  Fix: npm run build (see errors), fix files
+  Then: ./scripts/deploy.sh
+
+"Health check failed"
+  Fix: Wait 2 min (Vercel still building)
+  Then: ./scripts/health-check.sh
+
+================================================================================
+LOGS & HEALTH CHECK
+================================================================================
+
+View latest deployment log:
+  $ tail -100 .deploy-logs/deployment-*.log | sort -r | head
+
+Quick health check:
+  $ ./scripts/health-check.sh
+  $ ./scripts/health-check.sh --verbose
+
+Manual rollback (if script can't):
+  $ git log --oneline -5
+  $ git revert <bad-commit-hash>
+  $ git push origin main
+
+================================================================================
+CHECKLIST BEFORE DEPLOYING
+================================================================================
+
+☐ All PRs merged to main
+☐ No console.log() left in code
+☐ No hardcoded secrets/API keys
+☐ npm run build succeeds locally
+☐ Tested key flows (signup, search, booking)
+☐ Vercel env vars are set
+☐ No pending Vercel deployments
+☐ Rollback plan understood
+
+See full checklist: ./scripts/deploy-checklist.md
+
+================================================================================
+TEAM WORKFLOW
+================================================================================
+
+BEFORE:
+  1. Verify main branch is green
+  2. Review DEPLOY_CHECKLIST.md
+  3. Test locally: npm run dev
+
+DEPLOY:
+  1. Run ./scripts/deploy.sh
+  2. Monitor console output
+  3. If rollback prompt, choose option
+
+AFTER:
+  1. Verify at https://zing-connect.vercel.app
+  2. Test signup, search, booking
+  3. Check Vercel dashboard
+
+FAILED DEPLOYMENT:
+  1. Choose rollback option 1 (auto)
+  2. Investigate root cause
+  3. Fix and redeploy
+
+================================================================================
+VERCEL INTEGRATION
+================================================================================
+
+How it works:
+  git push origin main → GitHub webhook → Vercel auto-builds
+
+Verify setup:
+  $ git remote -v
+  (Should show GitHub or Vercel remote)
+
+Monitor deployment:
+  https://vercel.com/dashboard
+
+View logs:
+  https://vercel.com/dashboard → Project → Deployments
+
+Troubleshoot:
+  1. Check GitHub Actions (if using)
+  2. Check Vercel build logs
+  3. Check .deploy-logs locally
+
+================================================================================
+DOCUMENTATION
+================================================================================
+
+Full guide:           ./scripts/DEPLOY_README.md
+Setup instructions:   ./scripts/DEPLOYMENT_SETUP.md
+Pre-deploy checklist: ./scripts/deploy-checklist.md
+This quick ref:       ./scripts/DEPLOY_QUICK_REF.txt
+
+================================================================================
+EMERGENCY PROCEDURES
+================================================================================
+
+IMMEDIATE ROLLBACK (app is broken):
+  $ git revert HEAD
+  $ git push origin main
+  (New commit reverts changes, triggers redeploy)
+
+MANUAL DEPLOYMENT (if script fails):
+  $ npm run build      # Verify it compiles
+  $ git push origin main
+  (Let Vercel auto-build)
+
+CHECK IF LIVE:
+  $ ./scripts/health-check.sh
+  $ curl https://zing-connect.vercel.app
+
+================================================================================
+
+Questions? Check:
+  - ./scripts/DEPLOY_README.md (detailed guide)
+  - .deploy-logs/deployment-*.log (error details)
+  - https://vercel.com/dashboard (Vercel status)
+
+Last Updated: 2026-06-12
