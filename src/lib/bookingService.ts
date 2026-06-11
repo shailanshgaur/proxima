@@ -37,6 +37,7 @@ export const bookingService = {
 📅 Date: ${booking.scheduled_date}
 🕐 Time: ${booking.scheduled_time}
 Service: ${booking.service_type}
+🔐 Booking ID: ${booking.id}
 
 Reply YES to confirm or DECLINE`;
 

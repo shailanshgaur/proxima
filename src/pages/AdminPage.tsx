@@ -36,12 +36,12 @@ export const AdminPage: React.FC = () => {
 
         setIsAuthorized(true);
 
-        // Only load data if authorized
+        // Only load data if authorized (with pagination)
         const [vendorsData, bookingsData, appealsData, reviewsData] = await Promise.all([
-          supabase.from('vendors').select('*'),
-          supabase.from('bookings').select('*'),
-          supabase.from('appeals').select('*'),
-          supabase.from('reviews').select('*'),
+          supabase.from('vendors').select('*').range(0, 99).order('created_at', { ascending: false }),
+          supabase.from('bookings').select('*').range(0, 99).order('created_at', { ascending: false }),
+          supabase.from('appeals').select('*').range(0, 99).order('created_at', { ascending: false }),
+          supabase.from('reviews').select('*').range(0, 99).order('created_at', { ascending: false }),
         ]);
 
         if (!vendorsData.error) setVendors(vendorsData.data || []);

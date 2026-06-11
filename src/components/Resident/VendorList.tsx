@@ -16,6 +16,7 @@ export const VendorList: React.FC<VendorListProps> = ({ societyId, residentId, r
   const [error, setError] = useState<string | null>(null);
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
   const [category, setCategory] = useState('');
+  const [sortBy, setSortBy] = useState<'rating' | 'name'>('rating');
 
   const categories = ['Plumbing', 'Electrical', 'Cleaning', 'Painting', 'Carpentry'];
 
@@ -30,6 +31,14 @@ export const VendorList: React.FC<VendorListProps> = ({ societyId, residentId, r
         } else {
           data = await vendorService.getVendorsBySociety(societyId);
         }
+
+        // Sort by selected field
+        if (sortBy === 'rating') {
+          data = data.sort((a, b) => b.rating - a.rating);
+        } else {
+          data = data.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
         setVendors(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch vendors');
@@ -38,7 +47,7 @@ export const VendorList: React.FC<VendorListProps> = ({ societyId, residentId, r
       }
     };
     fetchVendors();
-  }, [societyId, category]);
+  }, [societyId, category, sortBy]);
 
   if (selectedVendor) {
     return (
@@ -61,16 +70,25 @@ export const VendorList: React.FC<VendorListProps> = ({ societyId, residentId, r
     <div style={{ padding: '20px' }}>
       <h2>Available Vendors</h2>
 
-      <div style={{ marginBottom: '20px' }}>
-        <label>Filter by category: </label>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ padding: '8px' }}>
-          <option value="">All</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
+      <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
+        <div>
+          <label>Filter by category: </label>
+          <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ padding: '8px' }}>
+            <option value="">All</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Sort by: </label>
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'rating' | 'name')} style={{ padding: '8px' }}>
+            <option value="rating">Rating (High to Low)</option>
+            <option value="name">Name (A to Z)</option>
+          </select>
+        </div>
       </div>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
