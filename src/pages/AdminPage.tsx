@@ -10,7 +10,6 @@ export const AdminPage: React.FC = () => {
   const [appeals, setAppeals] = useState<Appeal[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -34,7 +33,6 @@ export const AdminPage: React.FC = () => {
           return;
         }
 
-        setIsAuthorized(true);
 
         // Only load data if authorized (with pagination)
         const [vendorsData, bookingsData, appealsData, reviewsData] = await Promise.all([

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Appeal, Vendor } from '../../types';
+import { Appeal } from '../../types';
 import { supabase } from '../../lib/supabaseClient';
 
 interface AppealsQueueProps {
