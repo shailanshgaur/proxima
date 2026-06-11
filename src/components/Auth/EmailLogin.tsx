@@ -33,7 +33,12 @@ export const EmailLogin: React.FC<EmailLoginProps> = ({ onSuccess, onSignupClick
     setLoading(true);
     try {
       await authService.verifyEmailOtp(email, otp);
-      onSuccess();
+      const user = await authService.getCurrentUser();
+      if (user) {
+        onSuccess();
+      } else {
+        window.location.href = '/signup';
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to verify OTP');
     } finally {
