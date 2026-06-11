@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PhoneLogin } from '../components/Auth/PhoneLogin';
+import { EmailLogin } from '../components/Auth/EmailLogin';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ export const LoginPage: React.FC = () => {
         <p>Book local services in your society</p>
       </div>
 
-      <PhoneLogin onSuccess={() => navigate('/home')} onSignupClick={() => navigate('/signup')} />
+      <EmailLogin onSuccess={() => navigate('/home')} onSignupClick={() => navigate('/signup')} />
     </div>
   );
 };

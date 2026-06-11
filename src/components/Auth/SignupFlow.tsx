@@ -9,8 +9,8 @@ interface SignupFlowProps {
 }
 
 export const SignupFlow: React.FC<SignupFlowProps> = ({ onSuccess, onLoginClick }) => {
-  const [stage, setStage] = useState<'phone' | 'otp' | 'details'>('phone');
-  const [phone, setPhone] = useState('');
+  const [stage, setStage] = useState<'email' | 'otp' | 'details'>('email');
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [name, setName] = useState('');
   const [flatNumber, setFlatNumber] = useState('');
@@ -37,7 +37,7 @@ export const SignupFlow: React.FC<SignupFlowProps> = ({ onSuccess, onLoginClick 
     setError(null);
     setLoading(true);
     try {
-      await authService.signUpWithPhone(phone);
+      await authService.signUpWithEmail(email);
       setStage('otp');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send OTP');
@@ -51,7 +51,7 @@ export const SignupFlow: React.FC<SignupFlowProps> = ({ onSuccess, onLoginClick 
     setError(null);
     setLoading(true);
     try {
-      const { session } = await authService.verifyOtp(phone, otp);
+      const { session } = await authService.verifyEmailOtp(email, otp);
       if (session?.user?.id) {
         setAuthId(session.user.id);
         setStage('details');
@@ -69,7 +69,7 @@ export const SignupFlow: React.FC<SignupFlowProps> = ({ onSuccess, onLoginClick 
     setLoading(true);
     try {
       if (!authId) throw new Error('Auth ID missing');
-      await authService.createUserProfile(authId, phone, societyId, name, flatNumber);
+      await authService.createUserProfile(authId, email, societyId, name, flatNumber);
       onSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create profile');
@@ -84,13 +84,13 @@ export const SignupFlow: React.FC<SignupFlowProps> = ({ onSuccess, onLoginClick 
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {stage === 'phone' && (
+      {stage === 'email' && (
         <form onSubmit={handleSendOtp}>
           <input
-            type="tel"
-            placeholder="Enter phone number (+91...)"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            type="email"
+            placeholder="Enter email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
           />
@@ -102,7 +102,7 @@ export const SignupFlow: React.FC<SignupFlowProps> = ({ onSuccess, onLoginClick 
 
       {stage === 'otp' && (
         <form onSubmit={handleVerifyOtp}>
-          <p>OTP sent to {phone}</p>
+          <p>OTP sent to {email}</p>
           <input
             type="text"
             placeholder="Enter 6-digit OTP"
@@ -117,7 +117,7 @@ export const SignupFlow: React.FC<SignupFlowProps> = ({ onSuccess, onLoginClick 
           </button>
           <button
             type="button"
-            onClick={() => setStage('phone')}
+            onClick={() => setStage('email')}
             style={{ width: '100%', padding: '10px', marginTop: '10px' }}
           >
             Back

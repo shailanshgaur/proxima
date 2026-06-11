@@ -2,6 +2,10 @@ import { supabase } from './supabaseClient';
 import { User } from '../types';
 
 const validatePhone = (phone: string): string => {
+  // If it's an email (contains @), return as-is
+  if (phone.includes('@')) {
+    return phone.toLowerCase();
+  }
   const cleaned = phone.replace(/\D/g, '');
   // Indian phone: 10 digits (91 country code optional)
   if (cleaned.length === 10) {
@@ -9,10 +13,32 @@ const validatePhone = (phone: string): string => {
   } else if (cleaned.length === 12 && cleaned.startsWith('91')) {
     return '+' + cleaned;
   }
-  throw new Error('Invalid phone number. Use 10-digit Indian number.');
+  throw new Error('Invalid phone number or email. Use 10-digit Indian number or email.');
 };
 
 export const authService = {
+  async signUpWithEmail(email: string) {
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email: email.toLowerCase(),
+      options: { shouldCreateUser: true },
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async verifyEmailOtp(email: string, token: string) {
+    if (!token || token.length !== 6 || !/^\d+$/.test(token)) {
+      throw new Error('Invalid OTP format');
+    }
+    const { data, error } = await supabase.auth.verifyOtp({
+      email: email.toLowerCase(),
+      token,
+      type: 'email',
+    });
+    if (error) throw error;
+    return data;
+  },
+
   async signUpWithPhone(phone: string) {
     const validatedPhone = validatePhone(phone);
     const { data, error } = await supabase.auth.signInWithOtp({
