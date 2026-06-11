@@ -67,9 +67,14 @@ Reply YES to confirm or DECLINE`;
   },
 
   async updateBookingStatus(bookingId: string, status: string): Promise<Booking> {
+    const validStatuses = ['pending', 'confirmed', 'completed', 'no_show', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      throw new Error('Invalid booking status');
+    }
+
     const { data, error } = await supabase
       .from('bookings')
-      .update({ status, completed_at: new Date().toISOString() })
+      .update({ status, completed_at: status === 'completed' ? new Date().toISOString() : null })
       .eq('id', bookingId)
       .select()
       .single();

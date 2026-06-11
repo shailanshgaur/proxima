@@ -17,6 +17,18 @@ export const AppealsQueue: React.FC<AppealsQueueProps> = ({ appeals, onAppealRes
   const handleApprove = async (appealId: string, vendorId: string) => {
     setProcessing(appealId);
     try {
+      const session = await supabase.auth.getSession();
+      const { data: user } = await supabase
+        .from('users')
+        .select('is_admin')
+        .eq('auth_id', session.data.session?.user?.id)
+        .single();
+
+      if (!user?.is_admin) {
+        alert('Unauthorized');
+        return;
+      }
+
       const reason = decisionReason[appealId] || 'Appeal approved';
 
       await supabase

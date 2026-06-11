@@ -10,10 +10,33 @@ export const AdminPage: React.FC = () => {
   const [appeals, setAppeals] = useState<Appeal[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
+        // Check if user is admin FIRST
+        const session = await supabase.auth.getSession();
+        if (!session.data.session?.user?.id) {
+          window.location.href = '/login';
+          return;
+        }
+
+        const { data: user } = await supabase
+          .from('users')
+          .select('is_admin')
+          .eq('auth_id', session.data.session.user.id)
+          .single();
+
+        if (!user?.is_admin) {
+          // Not admin: deny access and redirect
+          window.location.href = '/home';
+          return;
+        }
+
+        setIsAuthorized(true);
+
+        // Only load data if authorized
         const [vendorsData, bookingsData, appealsData, reviewsData] = await Promise.all([
           supabase.from('vendors').select('*'),
           supabase.from('bookings').select('*'),
@@ -27,6 +50,7 @@ export const AdminPage: React.FC = () => {
         if (!reviewsData.error) setReviews(reviewsData.data || []);
       } catch (err) {
         console.error('Failed to load admin data:', err);
+        window.location.href = '/home';
       } finally {
         setLoading(false);
       }

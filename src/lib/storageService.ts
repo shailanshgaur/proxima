@@ -37,6 +37,23 @@ export const storageService = {
 
   async uploadBookingPhoto(bookingId: string, file: File): Promise<string> {
     try {
+      // Validate file type
+      const validMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!validMimeTypes.includes(file.type)) {
+        throw new Error('Only JPEG, PNG, and WebP images are allowed');
+      }
+
+      // Validate file size (max 5MB)
+      const maxSizeBytes = 5 * 1024 * 1024;
+      if (file.size > maxSizeBytes) {
+        throw new Error('File size must be less than 5MB');
+      }
+
+      // Validate booking ID is UUID format
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(bookingId)) {
+        throw new Error('Invalid booking ID');
+      }
+
       const compressed = await this.compressImage(file);
       const fileName = `bookings/${bookingId}/${Date.now()}.jpg`;
 

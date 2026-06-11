@@ -1,10 +1,22 @@
 import { supabase } from './supabaseClient';
 import { User } from '../types';
 
+const validatePhone = (phone: string): string => {
+  const cleaned = phone.replace(/\D/g, '');
+  // Indian phone: 10 digits (91 country code optional)
+  if (cleaned.length === 10) {
+    return '+91' + cleaned;
+  } else if (cleaned.length === 12 && cleaned.startsWith('91')) {
+    return '+' + cleaned;
+  }
+  throw new Error('Invalid phone number. Use 10-digit Indian number.');
+};
+
 export const authService = {
   async signUpWithPhone(phone: string) {
+    const validatedPhone = validatePhone(phone);
     const { data, error } = await supabase.auth.signInWithOtp({
-      phone,
+      phone: validatedPhone,
       options: { shouldCreateUser: true },
     });
     if (error) throw error;
@@ -12,8 +24,12 @@ export const authService = {
   },
 
   async verifyOtp(phone: string, token: string) {
+    const validatedPhone = validatePhone(phone);
+    if (!token || token.length !== 6 || !/^\d+$/.test(token)) {
+      throw new Error('Invalid OTP format');
+    }
     const { data, error } = await supabase.auth.verifyOtp({
-      phone,
+      phone: validatedPhone,
       token,
       type: 'sms',
     });
@@ -48,15 +64,43 @@ export const authService = {
     name: string,
     flatNumber: string
   ) {
+    // Validate authId is UUID
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(authId)) {
+      throw new Error('Invalid auth ID');
+    }
+
+    // Validate societyId is UUID
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(societyId)) {
+      throw new Error('Invalid society ID');
+    }
+
+    // Validate name
+    if (!name || name.trim().length === 0) {
+      throw new Error('Name is required');
+    }
+    if (name.length > 100) {
+      throw new Error('Name too long');
+    }
+
+    // Validate flat number
+    if (!flatNumber || flatNumber.trim().length === 0) {
+      throw new Error('Flat number is required');
+    }
+    if (flatNumber.length > 50) {
+      throw new Error('Flat number too long');
+    }
+
+    const validatedPhone = validatePhone(phone);
+
     const { data, error } = await supabase
       .from('users')
       .insert([
         {
           auth_id: authId,
-          phone,
+          phone: validatedPhone,
           society_id: societyId,
-          name,
-          flat_number: flatNumber,
+          name: name.trim(),
+          flat_number: flatNumber.trim(),
         },
       ])
       .select()

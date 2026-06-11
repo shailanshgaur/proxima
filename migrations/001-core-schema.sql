@@ -85,7 +85,8 @@ ALTER TABLE appeals ENABLE ROW LEVEL SECURITY;
 -- RLS Policies
 CREATE POLICY "users_select_own" ON users FOR SELECT USING (auth_id = auth.uid());
 CREATE POLICY "vendors_select_by_society" ON vendors FOR SELECT USING (
-  societies @> ARRAY[(SELECT society_id FROM users WHERE auth_id = auth.uid())]::UUID[]
+  (SELECT society_id FROM users WHERE auth_id = auth.uid()) IS NULL
+  OR societies @> ARRAY[(SELECT society_id FROM users WHERE auth_id = auth.uid())]::UUID[]
 );
 CREATE POLICY "bookings_select_own" ON bookings FOR SELECT USING (
   resident_id = (SELECT id FROM users WHERE auth_id = auth.uid())
