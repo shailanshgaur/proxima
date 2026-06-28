@@ -75,3 +75,53 @@ export interface Appeal {
   decided_at?: string;
   deadline_at: string;
 }
+
+export interface Product {
+  id: string;
+  seller_id: string;
+  society_id: string;
+  title: string;
+  description: string;
+  price: number;
+  category: 'Furniture' | 'Electronics' | 'Kids' | 'Appliances' | 'Sports' | 'Other';
+  condition: 'new' | 'like_new' | 'good' | 'fair';
+  photo_url?: string;
+  status: 'active' | 'sold' | 'removed';
+  seller_flat: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Ride {
+  id: string;
+  driver_id: string;
+  society_id: string;
+  origin: string;
+  destination: string;
+  waypoints?: string[];
+  departure_date: string;
+  departure_time: string;
+  seats_available: number;
+  fuel_split: number;
+  vehicle_model?: string;
+  vehicle_number?: string;
+  no_smoking: boolean;
+  ev_only: boolean;
+  status: 'open' | 'full' | 'completed' | 'cancelled';
+  created_at: string;
+}
+
+export interface ResidentProfile {
+  user_id: string;
+  flat_number: string;
+  name: string;
+  email: string;
+  society_id: string;
+  society_name?: string;
+  avatar_url?: string;
+  portal_id: string;
+  member_since: string;
+  is_admin: boolean;
+}
+
+export type Tab = 'overview' | 'bazar' | 'carpools' | 'services' | 'profile' | 'admin';
