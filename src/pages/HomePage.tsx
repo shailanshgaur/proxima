@@ -19,7 +19,10 @@ export const HomePage: React.FC = () => {
       try {
         const currentUser = await authService.getCurrentUser();
         if (!currentUser) {
-          window.location.href = '/login';
+          // Check if a Supabase session exists (e.g. arrived via magic link)
+          // If so, they're authenticated but have no profile → send to signup
+          const session = await authService.getSession();
+          window.location.href = session ? '/signup' : '/login';
           return;
         }
         setUser(currentUser);
