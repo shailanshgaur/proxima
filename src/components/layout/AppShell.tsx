@@ -2,29 +2,28 @@ import React, { useState } from 'react';
 import { ResidentProfile, Tab } from '../../types';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
+import { OverviewTab } from '../tabs/OverviewTab';
+import { BazarTab } from '../tabs/BazarTab';
+import { CarpoolsTab } from '../tabs/CarpoolsTab';
+import { ServicesTab } from '../tabs/ServicesTab';
+import { ResidentIDTab } from '../tabs/ResidentIDTab';
+import { AdminTab } from '../tabs/AdminTab';
 
 interface AppShellProps {
   profile: ResidentProfile;
 }
-
-// Placeholder tab components — will be replaced by actual tab files
-const PlaceholderTab: React.FC<{ name: string }> = ({ name }) => (
-  <div className="flex items-center justify-center h-64 text-proxima-muted text-sm">
-    {name} — coming soon
-  </div>
-);
 
 export const AppShell: React.FC<AppShellProps> = ({ profile }) => {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
 
   const renderTab = () => {
     switch (activeTab) {
-      case 'overview':  return <PlaceholderTab name="Hub Overview" />;
-      case 'bazar':     return <PlaceholderTab name="Society Bazar" />;
-      case 'carpools':  return <PlaceholderTab name="Society Carpools" />;
-      case 'services':  return <PlaceholderTab name="Verified Directory" />;
-      case 'profile':   return <PlaceholderTab name="My Resident ID" />;
-      case 'admin':     return <PlaceholderTab name="Admin Desk" />;
+      case 'overview':  return <OverviewTab profile={profile} onNavigate={setActiveTab} />;
+      case 'bazar':     return <BazarTab profile={profile} />;
+      case 'carpools':  return <CarpoolsTab profile={profile} />;
+      case 'services':  return <ServicesTab profile={profile} />;
+      case 'profile':   return <ResidentIDTab profile={profile} />;
+      case 'admin':     return <AdminTab profile={profile} />;
     }
   };
 
