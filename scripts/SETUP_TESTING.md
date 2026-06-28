@@ -377,7 +377,7 @@ After completing setup:
 
 For issues or questions:
 
-1. Check [TESTING.md](../TESTING.md) for general testing info
+1. Check [docs/testing/TESTING.md](../docs/testing/TESTING.md) for general testing info
 2. Check [PRE_LAUNCH_TESTS_GUIDE.md](PRE_LAUNCH_TESTS_GUIDE.md) for test details
 3. Review Supabase documentation: https://supabase.com/docs
 4. Contact: Product/Security/Architecture agents

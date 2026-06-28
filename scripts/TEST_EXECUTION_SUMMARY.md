@@ -24,7 +24,7 @@ A production-ready automated test suite for Proxima marketplace that validates a
 ### 3. Documentation
 - **`scripts/PRE_LAUNCH_TESTS_GUIDE.md`** - Complete testing guide with coverage details
 - **`scripts/SETUP_TESTING.md`** - Step-by-step setup instructions
-- **`TESTING.md`** - Overall testing strategy document
+- **`docs/testing/TESTING.md`** - Overall testing strategy document
 - **`scripts/TEST_EXECUTION_SUMMARY.md`** - This file
 
 ### 4. CI/CD Integration
@@ -352,7 +352,7 @@ bash scripts/pre-launch-tests.sh
 | `.github/workflows/pre-launch-tests.yml` | 200+ | CI/CD automation |
 | `scripts/PRE_LAUNCH_TESTS_GUIDE.md` | 400+ | Detailed test docs |
 | `scripts/SETUP_TESTING.md` | 350+ | Setup instructions |
-| `TESTING.md` | 300+ | Testing strategy |
+| `docs/testing/TESTING.md` | 300+ | Testing strategy |
 
 **Total**: 2,100+ lines of test code and documentation
 

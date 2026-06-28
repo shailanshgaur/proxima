@@ -210,7 +210,7 @@ grep "ERROR" /tmp/proxima_test_*.log
 
 - **Setup**: `scripts/SETUP_TESTING.md`
 - **Full Guide**: `scripts/PRE_LAUNCH_TESTS_GUIDE.md`
-- **Testing Strategy**: `TESTING.md`
+- **Testing Strategy**: `docs/testing/TESTING.md`
 - **This File**: `scripts/QUICK_REFERENCE.md`
 
 ## Contacts
