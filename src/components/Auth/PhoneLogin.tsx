@@ -43,7 +43,7 @@ export const PhoneLogin: React.FC<PhoneLoginProps> = ({ onSuccess, onSignupClick
 
   return (
     <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
-      <h2>Login to Zing Connect</h2>
+      <h2>Login to Proxima</h2>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
@@ -87,7 +87,7 @@ export const PhoneLogin: React.FC<PhoneLoginProps> = ({ onSuccess, onSignupClick
       )}
 
       <p style={{ marginTop: '20px', textAlign: 'center' }}>
-        New to Zing Connect?{' '}
+        New to Proxima?{' '}
         <button
           onClick={onSignupClick}
           style={{ background: 'none', border: 'none', color: 'blue', cursor: 'pointer' }}

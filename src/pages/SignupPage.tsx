@@ -8,7 +8,7 @@ export const SignupPage: React.FC = () => {
   return (
     <div style={{ maxWidth: '500px', margin: '0 auto', padding: '40px 20px' }}>
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <h1>Zing Connect</h1>
+        <h1>Proxima</h1>
         <p>Join your society's marketplace</p>
       </div>
 

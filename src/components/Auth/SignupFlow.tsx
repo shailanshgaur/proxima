@@ -80,7 +80,7 @@ export const SignupFlow: React.FC<SignupFlowProps> = ({ onSuccess, onLoginClick 
 
   return (
     <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
-      <h2>Create Zing Connect Account</h2>
+      <h2>Create Proxima Account</h2>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
