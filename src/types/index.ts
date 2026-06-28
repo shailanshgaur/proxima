@@ -28,6 +28,10 @@ export interface Vendor {
   review_count: number;
   is_archived: boolean;
   appeal_status: 'none' | 'pending' | 'approved' | 'rejected';
+  distance?: number;
+  response_time?: string;
+  review_snippet?: string;
+  jobs_this_month?: number;
   created_at: string;
 }
 

@@ -1,0 +1,179 @@
+{
+  "schema": "impeccable/design/1.0",
+  "name": "Proxima Design System",
+  "version": "1.0.0",
+  "north_star": "The Night Dispatch",
+  "theme": "dark-cinema",
+  "tokens": {
+    "color": {
+      "bgDeep":        { "value": "#020203", "name": "Midnight Void",  "usage": "Page background, full-bleed screens" },
+      "bg":            { "value": "#050506", "name": "Deep Ground",    "usage": "Default body, scrollable areas" },
+      "elevated":      { "value": "#0d0d0f", "name": "Raised Surface", "usage": "Cards, modals, bottom sheets, inputs" },
+      "border":        { "value": "rgba(255,255,255,0.08)",  "name": "Hairline",       "usage": "Default border on elevated surfaces" },
+      "borderHover":   { "value": "rgba(255,255,255,0.16)",  "name": "Hairline Hover", "usage": "Border on hover/focus for interactive elements" },
+      "surface":       { "value": "rgba(255,255,255,0.04)",  "name": "Surface Tint",   "usage": "Row hover background" },
+      "surfaceHover":  { "value": "rgba(255,255,255,0.07)",  "name": "Surface Pressed", "usage": "Row pressed background" },
+      "ink":           { "value": "#EDEDEF", "name": "Warm White",    "usage": "Primary body text, labels, headings" },
+      "muted":         { "value": "#8A8F98", "name": "Slate Muted",   "usage": "Secondary text, timestamps, subtitles" },
+      "subtle":        { "value": "#4A4D56", "name": "Quiet Gray",    "usage": "Placeholder text, disabled labels, dividers" },
+      "ochre":         { "value": "#e07b39", "name": "Ember Orange",  "usage": "Primary buttons, active states, focus rings, CTA text" },
+      "ochreDark":     { "value": "#c96f2f", "name": "Deep Ember",    "usage": "Button hover, pressed state, active nav item" },
+      "ochreGlow":     { "value": "rgba(224,123,57,0.20)", "name": "Ember Glow",   "usage": "Box-glow on primary action hover only" },
+      "ochreDim":      { "value": "rgba(224,123,57,0.10)", "name": "Ember Dim",    "usage": "Subtle ochre tint backgrounds" },
+      "ochreBorder":   { "value": "rgba(224,123,57,0.25)", "name": "Ember Border", "usage": "Focused input border, active card accent" },
+      "successText":   { "value": "#4ade80", "name": "Confirm Green", "usage": "Booking confirmed, availability, positive status" },
+      "successBg":     { "value": "rgba(74,222,128,0.08)",  "name": "Confirm Tint",   "usage": "Success state background" },
+      "successBorder": { "value": "rgba(74,222,128,0.18)",  "name": "Confirm Border", "usage": "Success state border" },
+      "errText":       { "value": "#f87171", "name": "Alert Red",     "usage": "Errors, failed OTP, unavailable, destructive actions" },
+      "errBg":         { "value": "rgba(248,113,113,0.08)",  "name": "Alert Tint",   "usage": "Error state background" },
+      "errBorder":     { "value": "rgba(248,113,113,0.18)",  "name": "Alert Border", "usage": "Error state border" }
+    },
+    "radius": {
+      "default": { "value": "8px",    "usage": "Inputs, small elements" },
+      "lg":      { "value": "14px",   "usage": "Cards, modals, auth card" },
+      "full":    { "value": "9999px", "usage": "Pills, badges, buttons, avatars" }
+    },
+    "font": {
+      "sans": { "value": "Inter, -apple-system, system-ui, sans-serif", "usage": "All UI text" },
+      "mono": { "value": "ui-monospace, 'SF Mono', monospace",          "usage": "OTP digits, numeric codes, prices" }
+    },
+    "motion": {
+      "ease":     { "value": "cubic-bezier(0.16, 1, 0.3, 1)", "name": "Expo Out", "usage": "All transitions" },
+      "fast":     { "value": "120ms", "usage": "Active/press state" },
+      "base":     { "value": "220ms", "usage": "Hover, border, background" },
+      "slow":     { "value": "400ms", "usage": "Page entrance, modal open" }
+    },
+    "elevation": {
+      "0-void":     { "background": "#020203", "border": "none",                         "shadow": "none",                              "usage": "Full-bleed splash, map canvas" },
+      "1-ground":   { "background": "#050506", "border": "none",                         "shadow": "none",                              "usage": "Page body, scroll container" },
+      "2-raised":   { "background": "#0d0d0f", "border": "rgba(255,255,255,0.08)",        "shadow": "none",                              "usage": "Cards, inputs, modals" },
+      "3-floating": { "background": "#0d0d0f", "border": "rgba(255,255,255,0.10)",        "shadow": "none",                              "usage": "Bottom sheets, dropdowns, toasts" },
+      "cta-hover":  { "background": "#e07b39", "border": "rgba(224,123,57,0.25)",         "shadow": "0 0 20px rgba(224,123,57,0.20)",    "usage": "Primary button hover only" }
+    }
+  },
+  "typography": {
+    "display":    { "size": "28px", "weight": 700, "lineHeight": 1.2, "letterSpacing": "-0.01em" },
+    "heading":    { "size": "20px", "weight": 600, "lineHeight": 1.3, "letterSpacing": "-0.01em" },
+    "subheading": { "size": "17px", "weight": 500, "lineHeight": 1.4, "letterSpacing": "0" },
+    "body":       { "size": "15px", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" },
+    "label":      { "size": "13px", "weight": 500, "lineHeight": 1.4, "letterSpacing": "0.01em" },
+    "caption":    { "size": "12px", "weight": 400, "lineHeight": 1.4, "letterSpacing": "0.01em" },
+    "micro":      { "size": "10px", "weight": 500, "lineHeight": 1.3, "letterSpacing": "0.02em" },
+    "mono":       { "size": "15px", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" }
+  },
+  "components": [
+    {
+      "name": "PrimaryButton",
+      "variant": "primary",
+      "height": "52px",
+      "radius": "9999px",
+      "background": "#e07b39",
+      "color": "#EDEDEF",
+      "hoverBackground": "#c96f2f",
+      "hoverShadow": "0 0 20px rgba(224,123,57,0.20)",
+      "disabledBackground": "rgba(224,123,57,0.30)",
+      "disabledColor": "rgba(237,237,239,0.40)",
+      "touchTarget": "52px"
+    },
+    {
+      "name": "GhostButton",
+      "variant": "ghost",
+      "height": "44px",
+      "radius": "9999px",
+      "background": "transparent",
+      "color": "#e07b39",
+      "border": "1px solid rgba(224,123,57,0.25)",
+      "hoverBackground": "rgba(224,123,57,0.10)",
+      "hoverBorder": "rgba(224,123,57,0.50)",
+      "touchTarget": "44px"
+    },
+    {
+      "name": "VendorCard",
+      "radius": "14px",
+      "background": "#0d0d0f",
+      "border": "rgba(255,255,255,0.08)",
+      "hoverBackground": "#111113",
+      "hoverBorder": "rgba(255,255,255,0.16)",
+      "avatarSize": "52px",
+      "requiredFields": ["name", "category", "rating", "distance"],
+      "optionalFields": ["proofCount", "avatar"]
+    },
+    {
+      "name": "SearchInput",
+      "height": "52px",
+      "radius": "9999px",
+      "background": "#0d0d0f",
+      "border": "rgba(255,255,255,0.08)",
+      "focusBorder": "rgba(224,123,57,0.25)",
+      "focusShadow": "0 0 0 3px rgba(224,123,57,0.08)",
+      "placeholderColor": "#4A4D56"
+    },
+    {
+      "name": "OtpInput",
+      "cellWidth": "48px",
+      "cellHeight": "56px",
+      "radius": "8px",
+      "font": "mono",
+      "fontSize": "22px",
+      "background": "#0d0d0f",
+      "border": "rgba(255,255,255,0.08)",
+      "focusBorder": "rgba(224,123,57,0.25)",
+      "filledColor": "#e07b39",
+      "filledBorder": "rgba(224,123,57,0.35)",
+      "errorBorder": "rgba(248,113,113,0.50)"
+    },
+    {
+      "name": "Pill",
+      "variants": {
+        "neutral": { "background": "rgba(255,255,255,0.06)", "border": "rgba(255,255,255,0.10)", "color": "#8A8F98" },
+        "accent":  { "background": "rgba(224,123,57,0.10)", "border": "rgba(224,123,57,0.25)",  "color": "#e07b39" },
+        "success": { "background": "rgba(74,222,128,0.08)", "border": "rgba(74,222,128,0.18)",  "color": "#4ade80" },
+        "error":   { "background": "rgba(248,113,113,0.08)","border": "rgba(248,113,113,0.18)", "color": "#f87171" }
+      },
+      "height": "22px",
+      "radius": "9999px",
+      "fontSize": "11px",
+      "fontWeight": 600
+    },
+    {
+      "name": "BottomNav",
+      "height": "64px",
+      "safeAreaInset": "env(safe-area-inset-bottom)",
+      "background": "#0d0d0f",
+      "borderTop": "rgba(255,255,255,0.08)",
+      "inactiveColor": "#4A4D56",
+      "activeColor": "#e07b39",
+      "maxItems": 4,
+      "touchTarget": "48px"
+    },
+    {
+      "name": "AuthCard",
+      "maxWidth": "400px",
+      "background": "#0d0d0f",
+      "border": "rgba(255,255,255,0.08)",
+      "radius": "14px",
+      "padding": "32px 28px",
+      "rootBackground": "#020203"
+    }
+  ],
+  "principles": [
+    "Proximity first — distance always visible; nearest vendor wins by default",
+    "Trust through neighbors — jobs done in your society, vendor names and faces",
+    "Speed over perfect — 3-tap booking maximum",
+    "Hyperlocal narrative — find someone nearby, book today",
+    "Earned rating — rating tied to real work in resident's neighborhood"
+  ],
+  "anti_references": [
+    "Generic SaaS (Figma blue, teal primary, white surfaces, card grids)",
+    "Overly formal (banking, clinical, distant)",
+    "Overly playful (doodles, gradients, emoji as icons)",
+    "Invisible unless you search (no community proof, no personalities)"
+  ],
+  "accessibility": {
+    "wcag": "AA",
+    "minTouchTarget": "48dp",
+    "minBodyTextSize": "13px",
+    "colorAloneConveysNoMeaning": true,
+    "reducedMotion": "prefers-reduced-motion respected globally"
+  }
+}

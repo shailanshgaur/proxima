@@ -30,6 +30,15 @@ export const authService = {
     if (!token || token.length !== 6 || !/^\d+$/.test(token)) {
       throw new Error('Invalid OTP format');
     }
+
+    // Test mode: auto-verify test emails (dev only)
+    if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development' && email.includes('test')) {
+      return {
+        user: { id: 'test-user-' + email.split('@')[0] },
+        session: { user: { id: 'test-user-' + email.split('@')[0] } } as any,
+      };
+    }
+
     const { data, error } = await supabase.auth.verifyOtp({
       email: email.toLowerCase(),
       token,
