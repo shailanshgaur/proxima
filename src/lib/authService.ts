@@ -2,6 +2,18 @@ import { supabase } from './supabaseClient';
 import { ResidentProfile } from '../types';
 
 export const authService = {
+  // SMTP CONFIGURATION REQUIRED FOR PRODUCTION
+  // Supabase built-in SMTP: 4 emails/hour — dev only
+  // Switch to Resend before launch:
+  //   1. resend.com → create API key
+  //   2. Supabase Dashboard → Project Settings → Auth → SMTP Settings
+  //   3. Enable Custom SMTP:
+  //      Host:     smtp.resend.com
+  //      Port:     465
+  //      User:     resend
+  //      Password: <RESEND_API_KEY>
+  //      Sender:   noreply@<your-domain>
+  //   4. Resend free: 3,000/month, 100/day — use paid ($20/mo) for 750 users
   async signInWithGoogle(): Promise<void> {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',

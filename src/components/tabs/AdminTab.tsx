@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Users, ShoppingBag, AlertTriangle, Shield, CheckCircle, XCircle } from 'lucide-react';
 import { ResidentProfile } from '../../types';
 import { supabase } from '../../lib/supabaseClient';
 
@@ -38,83 +37,145 @@ export const AdminTab: React.FC<AdminTabProps> = ({ profile }) => {
   if (!profile.is_admin) {
     return (
       <div className="max-w-2xl mx-auto text-center py-20">
-        <Lock className="w-12 h-12 mx-auto mb-4 text-proxima-muted opacity-40" />
         <h2 className="text-lg font-bold text-proxima-text mb-2">Admin Access Required</h2>
-        <p className="text-sm text-proxima-muted">This area is restricted to verified community administrators.</p>
+        <p className="text-sm text-proxima-muted">Restricted to verified community administrators.</p>
       </div>
     );
   }
 
-  const METRICS = [
-    { label: 'Verified Members', value: '—', sub: 'Active residents',    icon: <Users className="w-5 h-5" />,        color: 'text-proxima-primary' },
-    { label: 'Active Listings',  value: '—', sub: 'In marketplace',       icon: <ShoppingBag className="w-5 h-5" />,  color: 'text-proxima-secondary' },
-    { label: 'Pending Appeals',  value: String(appeals.length), sub: 'Require review', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-proxima-warning' },
-    { label: 'Grid Security',    value: '99.8%', sub: 'All nodes synced', icon: <Shield className="w-5 h-5" />,      color: 'text-proxima-success' },
-  ];
-
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-display font-black text-proxima-text flex items-center gap-2">
-          <Lock className="w-6 h-6 text-proxima-primary" />
+    <div className="max-w-4xl mx-auto space-y-8">
+
+      {/* Title Section */}
+      <div className="space-y-1">
+        <h1 className="text-2xl font-display font-black text-white tracking-tight">
           Admin Control Center
         </h1>
-        <p className="text-sm text-proxima-muted mt-1">Locked administration interface. Audit registered database entries, moderate flagged listings, and verify service providers.</p>
+        <p className="text-sm text-proxima-muted">
+          Locked administration interface. Audit registered database entries, moderate flagged listings, and verify service providers.
+        </p>
       </div>
 
+      {/* Metric Cards — 2×2 on mobile, 4 on lg */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {METRICS.map(m => (
-          <div key={m.label} className="bg-proxima-card border border-proxima-border rounded-xl p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className={m.color}>{m.icon}</span>
-              <span className="text-[9px] font-mono uppercase tracking-wider text-proxima-muted">{m.label}</span>
-            </div>
-            <div>
-              <div className="text-2xl font-black text-proxima-text font-mono">{m.value}</div>
-              <div className="text-xs text-proxima-muted mt-0.5">{m.sub}</div>
-            </div>
+
+        {/* Verified Members */}
+        <div className="bg-proxima-card border border-proxima-border rounded-2xl p-4 space-y-3">
+          <span className="text-[9px] font-mono uppercase tracking-wider text-proxima-muted block">
+            Verified Members
+          </span>
+          <div>
+            <div className="text-2xl font-display font-extrabold text-white font-mono">712</div>
+            <div className="text-xs text-proxima-muted mt-0.5">+ enrolled</div>
           </div>
-        ))}
+        </div>
+
+        {/* Active Listings */}
+        <div className="bg-proxima-card border border-proxima-border rounded-2xl p-4 space-y-3">
+          <span className="text-[9px] font-mono uppercase tracking-wider text-proxima-muted block">
+            Active Listings
+          </span>
+          <div>
+            <div className="text-2xl font-display font-extrabold text-white font-mono">—</div>
+            <div className="text-xs text-proxima-muted mt-0.5">In marketplace</div>
+          </div>
+        </div>
+
+        {/* Pending Appeals */}
+        <div className="bg-proxima-card border border-proxima-border rounded-2xl p-4 space-y-3">
+          <span className="text-[9px] font-mono uppercase tracking-wider text-proxima-muted block">
+            Pending Appeals
+          </span>
+          <div>
+            <div className="text-2xl font-display font-extrabold text-white font-mono">
+              {appeals.length} Alerts
+            </div>
+            <div className="text-xs text-red-400 mt-0.5">Requires supervisor check</div>
+          </div>
+        </div>
+
+        {/* Grid Security */}
+        <div className="bg-proxima-card border border-proxima-border rounded-2xl p-4 space-y-3">
+          <span className="text-[9px] font-mono uppercase tracking-wider text-proxima-muted block">
+            Grid Security
+          </span>
+          <div>
+            <div className="text-2xl font-display font-extrabold text-white font-mono">99.8%</div>
+            <div className="text-xs text-proxima-success mt-0.5">All nodes synced</div>
+          </div>
+        </div>
+
       </div>
 
-      <div>
-        <h2 className="text-xs font-semibold text-proxima-muted uppercase tracking-wider font-mono mb-3 flex items-center gap-2">
-          <AlertTriangle className="w-3.5 h-3.5 text-proxima-warning" />
-          Pending Vendor Appeals
+      {/* Pending Resident Flags */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold text-proxima-muted uppercase tracking-wider font-mono">
+          Pending Resident Flags
         </h2>
+
         {loading ? (
-          <div className="space-y-3">{[1,2].map(i => <div key={i} className="bg-proxima-card border border-proxima-border rounded-xl h-24 animate-pulse" />)}</div>
+          <div className="space-y-3">
+            {[1, 2].map(i => (
+              <div key={i} className="bg-proxima-base border border-proxima-border rounded-xl h-28 animate-pulse" />
+            ))}
+          </div>
         ) : appeals.length === 0 ? (
-          <div className="text-center py-12 text-proxima-muted bg-proxima-card border border-proxima-border rounded-xl">
-            <CheckCircle className="w-8 h-8 mx-auto mb-2 text-proxima-success opacity-60" />
-            <p className="text-sm">No pending appeals. Queue is clear.</p>
+          <div className="bg-proxima-active text-proxima-primary-light rounded-xl border border-proxima-primary/30 px-5 py-8 text-center">
+            <p className="text-sm font-medium">All queued complaints have been fully handled.</p>
           </div>
         ) : (
           <div className="space-y-3">
             {appeals.map(appeal => (
-              <div key={appeal.id} className="bg-proxima-card border border-proxima-warning/20 rounded-xl p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="space-y-1 min-w-0">
-                    <div className="text-sm font-semibold text-proxima-text">{appeal.vendors?.name ?? 'Unknown Vendor'}</div>
-                    <p className="text-xs text-proxima-muted line-clamp-2">{appeal.reason}</p>
-                    <p className="text-[10px] text-proxima-muted font-mono">Deadline: {new Date(appeal.deadline_at).toLocaleString('en-IN')}</p>
+              <div
+                key={appeal.id}
+                className="bg-proxima-base rounded-xl border border-proxima-border p-4"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+
+                  {/* Left: metadata */}
+                  <div className="space-y-1.5 min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="inline-block text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-proxima-primary/15 text-proxima-primary-light border border-proxima-primary/20 uppercase tracking-wide">
+                        Vendor Appeal
+                      </span>
+                    </div>
+                    <p className="text-xs text-proxima-muted">
+                      Reported by{' '}
+                      <span className="text-proxima-text font-medium">
+                        {appeal.vendors?.name ?? 'Unknown Vendor'}
+                      </span>
+                    </p>
+                    <p className="text-sm text-proxima-text leading-snug line-clamp-3">
+                      {appeal.reason}
+                    </p>
+                    <p className="text-[10px] text-proxima-muted font-mono">
+                      Deadline: {new Date(appeal.deadline_at).toLocaleString('en-IN')}
+                    </p>
                   </div>
-                  <div className="flex gap-2 shrink-0">
-                    <button onClick={() => handleDecision(appeal.id, 'approved')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-proxima-success/10 hover:bg-proxima-success/20 text-proxima-success border border-proxima-success/30 rounded-lg text-xs font-semibold transition-all">
-                      <CheckCircle className="w-3.5 h-3.5" /> Approve
+
+                  {/* Right: action buttons */}
+                  <div className="flex gap-2 shrink-0 self-end sm:self-start">
+                    <button
+                      onClick={() => handleDecision(appeal.id, 'approved')}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-proxima-success/15 text-proxima-success border border-proxima-success/20 hover:bg-proxima-success/25"
+                    >
+                      ✓ Approve
                     </button>
-                    <button onClick={() => handleDecision(appeal.id, 'rejected')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-proxima-error/10 hover:bg-proxima-error/20 text-proxima-error border border-proxima-error/30 rounded-lg text-xs font-semibold transition-all">
-                      <XCircle className="w-3.5 h-3.5" /> Reject
+                    <button
+                      onClick={() => handleDecision(appeal.id, 'rejected')}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-red-950/40 text-red-400 border border-red-900/30 hover:bg-red-950/60"
+                    >
+                      ✕ Reject
                     </button>
                   </div>
+
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
     </div>
   );
 };

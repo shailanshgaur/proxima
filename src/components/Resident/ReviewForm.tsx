@@ -9,7 +9,53 @@ interface ReviewFormProps {
   onReviewSubmitted: () => void;
 }
 
-export const ReviewForm: React.FC<ReviewFormProps> = ({ booking, vendor, residentId, onReviewSubmitted }) => {
+const RATING_LABELS: Record<number, string> = {
+  1: 'Poor',
+  2: 'Fair',
+  3: 'Good',
+  4: 'Very good',
+  5: 'Excellent',
+};
+
+/* Number-circle rating picker — no emoji, no icon fonts */
+function RatingPicker({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button
+            key={n}
+            type="button"
+            onClick={() => onChange(n)}
+            className={`w-10 h-10 rounded-full border-2 text-sm font-semibold transition-all cursor-pointer ${
+              value >= n
+                ? 'bg-proxima-primary border-proxima-primary text-white'
+                : 'border-proxima-border text-proxima-muted hover:border-proxima-primary/60 hover:text-proxima-primary'
+            }`}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+      {value > 0 && (
+        <p className="text-sm text-proxima-muted">{RATING_LABELS[value]}</p>
+      )}
+    </div>
+  );
+}
+
+export const ReviewForm: React.FC<ReviewFormProps> = ({
+  booking,
+  vendor,
+  residentId,
+  onReviewSubmitted,
+}) => {
   const [rating, setRating] = useState(0);
   const [text, setText] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -24,7 +70,6 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ booking, vendor, residen
       try {
         const vendorReviews = await reviewService.getVendorReviews(vendor.id);
         setReviews(vendorReviews);
-
         const alreadyReviewed = vendorReviews.some((r) => r.booking_id === booking.id);
         setHasReviewed(alreadyReviewed);
       } catch (err) {
@@ -42,10 +87,9 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ booking, vendor, residen
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (rating === 0) {
-      setError('Please select a rating');
+      setError('Please select a rating (1–5)');
       return;
     }
-
     setError(null);
     setSubmitting(true);
 
@@ -71,90 +115,133 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({ booking, vendor, residen
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Rate {vendor.name}</h2>
-      <p>Vendor Average: {vendor.rating.toFixed(1)} out of 5 ({vendor.review_count} reviews)</p>
+    <div className="space-y-4">
+      {/* Vendor summary */}
+      <div
+        className="bg-proxima-card border border-proxima-border rounded-xl p-4"
+        style={{ boxShadow: '0 1px 3px rgba(28,25,23,0.06)' }}
+      >
+        <h2 className="text-base font-semibold text-proxima-text">Rate {vendor.name}</h2>
+        <p className="text-sm text-proxima-muted mt-0.5">
+          Average: {vendor.rating.toFixed(1)}&thinsp;/&thinsp;5
+          &nbsp;&middot;&nbsp;
+          {vendor.review_count} {vendor.review_count === 1 ? 'review' : 'reviews'}
+        </p>
+      </div>
 
+      {/* Write review */}
       {!hasReviewed && (
-        <form onSubmit={handleSubmit} style={{ marginBottom: '30px', padding: '15px', background: '#f9f9f9', borderRadius: '4px' }}>
-          <h3>Share Your Experience</h3>
+        <div
+          className="bg-proxima-card border border-proxima-border rounded-xl p-4 space-y-5"
+          style={{ boxShadow: '0 1px 3px rgba(28,25,23,0.06)' }}
+        >
+          <h3 className="text-sm font-semibold text-proxima-text">Share your experience</h3>
 
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          {success && <p style={{ color: 'green' }}>Thank you for your review!</p>}
-
-          <div style={{ marginBottom: '15px' }}>
-            <label>Rating:</label>
-            <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => setRating(star)}
-                  style={{
-                    fontSize: '24px',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    opacity: rating >= star ? 1 : 0.3,
-                  }}
-                >
-                  {'⭐'}
-                </button>
-              ))}
+          {error && (
+            <div
+              className="p-3 rounded-xl text-sm text-proxima-error"
+              style={{ background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.20)' }}
+            >
+              {error}
             </div>
-          </div>
+          )}
 
-          <div style={{ marginBottom: '15px' }}>
-            <label>Review (optional):</label>
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Share your experience with this vendor..."
-              maxLength={500}
-              style={{
-                width: '100%',
-                padding: '8px',
-                marginTop: '5px',
-                minHeight: '100px',
-                fontFamily: 'inherit',
-              }}
-            />
-            <p style={{ fontSize: '12px', color: '#666' }}>{text.length}/500</p>
-          </div>
+          {success && (
+            <div
+              className="p-3 rounded-xl text-sm text-proxima-success"
+              style={{ background: 'rgba(21,128,61,0.06)', border: '1px solid rgba(21,128,61,0.20)' }}
+            >
+              Thank you — your review has been submitted.
+            </div>
+          )}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            style={{
-              padding: '10px 20px',
-              background: '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: submitting ? 'not-allowed' : 'pointer',
-            }}
-          >
-            {submitting ? 'Submitting...' : 'Submit Review'}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-proxima-text">Rating</label>
+              <RatingPicker value={rating} onChange={setRating} />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-proxima-text">
+                Review{' '}
+                <span className="font-normal text-proxima-muted">(optional)</span>
+              </label>
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Share your experience with this vendor…"
+                maxLength={500}
+                rows={3}
+                className="form-control w-full px-3 py-2.5 border border-proxima-border rounded-lg text-sm text-proxima-text placeholder:text-proxima-muted bg-proxima-base resize-none"
+              />
+              <p className="text-xs text-proxima-muted text-right">
+                {text.length}&thinsp;/&thinsp;500
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-proxima-primary hover:bg-proxima-primary-dim text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+              style={{ minHeight: '48px' }}
+            >
+              {submitting ? 'Submitting…' : 'Submit Review'}
+            </button>
+          </form>
+        </div>
       )}
 
-      <div>
-        <h3>All Reviews ({reviews.length})</h3>
-        {loadingReviews && <p>Loading reviews...</p>}
-        {reviews.length === 0 && <p>No reviews yet.</p>}
+      {/* Review list */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold text-proxima-text">
+          All reviews ({reviews.length})
+        </h3>
 
-        <div style={{ display: 'grid', gap: '10px' }}>
-          {reviews.map((review) => (
-            <div key={review.id} style={{ border: '1px solid #ddd', padding: '10px', borderRadius: '4px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 'bold' }}>{'⭐'.repeat(review.rating)}</span>
-                <span style={{ fontSize: '12px', color: '#666' }}>{new Date(review.created_at).toLocaleDateString()}</span>
-              </div>
-              {review.text && <p>{review.text}</p>}
+        {loadingReviews && (
+          <div className="space-y-2">
+            {[1, 2].map((i) => (
+              <div
+                key={i}
+                className="bg-proxima-card border border-proxima-border rounded-xl h-16 animate-pulse"
+              />
+            ))}
+          </div>
+        )}
+
+        {!loadingReviews && reviews.length === 0 && (
+          <div className="py-10 bg-proxima-card border border-proxima-border rounded-xl text-center">
+            <p className="text-sm text-proxima-muted">
+              No reviews yet. Be the first to review!
+            </p>
+          </div>
+        )}
+
+        {reviews.map((review) => (
+          <div
+            key={review.id}
+            className="bg-proxima-card border border-proxima-border rounded-xl p-4 space-y-2"
+            style={{ boxShadow: '0 1px 3px rgba(28,25,23,0.06)' }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-proxima-primary">
+                {review.rating}&thinsp;/&thinsp;5
+                <span className="ml-2 font-normal text-proxima-muted text-xs">
+                  {RATING_LABELS[review.rating] ?? ''}
+                </span>
+              </span>
+              <span className="text-xs text-proxima-muted">
+                {new Date(review.created_at).toLocaleDateString('en-IN', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                })}
+              </span>
             </div>
-          ))}
-        </div>
+            {review.text && (
+              <p className="text-sm text-proxima-text leading-relaxed">{review.text}</p>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

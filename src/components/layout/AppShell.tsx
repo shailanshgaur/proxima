@@ -13,6 +13,15 @@ interface AppShellProps {
   profile: ResidentProfile;
 }
 
+/* Mobile bottom nav — text labels only, no icons */
+const BOTTOM_NAV: { id: Tab; label: string }[] = [
+  { id: 'overview',  label: 'Home' },
+  { id: 'bazar',     label: 'Bazar' },
+  { id: 'carpools',  label: 'Carpools' },
+  { id: 'services',  label: 'Services' },
+  { id: 'profile',   label: 'Profile' },
+];
+
 export const AppShell: React.FC<AppShellProps> = ({ profile }) => {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
 
@@ -29,12 +38,82 @@ export const AppShell: React.FC<AppShellProps> = ({ profile }) => {
 
   return (
     <div className="flex h-screen bg-proxima-base overflow-hidden">
-      <Sidebar profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />
+      {/* Sidebar — desktop only */}
+      <div className="hidden md:flex">
+        <Sidebar profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+
+      {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <TopBar profile={profile} />
-        <main className="flex-1 overflow-y-auto p-6">
+
+        <main
+          className="flex-1 overflow-y-auto p-4 md:p-6"
+          /* Bottom padding on mobile accounts for the fixed bottom nav + iPhone safe area */
+          style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
+        >
           {renderTab()}
         </main>
+
+        {/* Bottom nav — mobile only */}
+        <nav
+          className="md:hidden fixed bottom-0 left-0 right-0 bg-proxima-card border-t border-proxima-border flex"
+          style={{
+            paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+            boxShadow: '0 -1px 0 rgba(28,25,23,0.08)',
+          }}
+        >
+          {BOTTOM_NAV.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className="flex-1 flex flex-col items-center justify-center transition-colors cursor-pointer"
+                style={{ minHeight: '56px' }}
+              >
+                <span
+                  className={`text-xs transition-colors ${
+                    isActive
+                      ? 'font-semibold text-proxima-primary'
+                      : 'font-medium text-proxima-muted'
+                  }`}
+                >
+                  {item.label}
+                </span>
+                {/* Active indicator dot */}
+                <span
+                  className={`mt-1 w-1 h-1 rounded-full transition-all ${
+                    isActive ? 'bg-proxima-primary' : 'bg-transparent'
+                  }`}
+                />
+              </button>
+            );
+          })}
+          {/* Admin tab on mobile — only for admins, always last */}
+          {profile.is_admin && (
+            <button
+              onClick={() => setActiveTab('admin')}
+              className="flex-1 flex flex-col items-center justify-center transition-colors cursor-pointer"
+              style={{ minHeight: '56px' }}
+            >
+              <span
+                className={`text-xs transition-colors ${
+                  activeTab === 'admin'
+                    ? 'font-semibold text-proxima-primary'
+                    : 'font-medium text-proxima-muted'
+                }`}
+              >
+                Admin
+              </span>
+              <span
+                className={`mt-1 w-1 h-1 rounded-full transition-all ${
+                  activeTab === 'admin' ? 'bg-proxima-primary' : 'bg-transparent'
+                }`}
+              />
+            </button>
+          )}
+        </nav>
       </div>
     </div>
   );
