@@ -22,6 +22,17 @@ export const authService = {
     if (error) throw new Error(error.message);
   },
 
+  async signInWithEmail(email: string): Promise<void> {
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes('@')) throw new Error('Enter a valid email address');
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email: cleanEmail,
+      options: { emailRedirectTo: `${window.location.origin}/` },
+    });
+    if (error) throw new Error(error.message);
+  },
+
   async signOut(): Promise<void> {
     const { error } = await supabase.auth.signOut();
     if (error) throw new Error(error.message);
