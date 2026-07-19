@@ -32,10 +32,14 @@ CREATE POLICY rides_select ON rides FOR SELECT
   );
 
 CREATE POLICY rides_insert ON rides FOR INSERT
-  WITH CHECK (driver_id = (SELECT id FROM users WHERE auth_id = auth.uid()));
+  WITH CHECK (
+    driver_id = (SELECT id FROM users WHERE auth_id = auth.uid())
+    AND society_id = (SELECT society_id FROM users WHERE auth_id = auth.uid())
+  );
 
 CREATE POLICY rides_update ON rides FOR UPDATE
-  USING (driver_id = (SELECT id FROM users WHERE auth_id = auth.uid()));
+  USING (driver_id = (SELECT id FROM users WHERE auth_id = auth.uid()))
+  WITH CHECK (society_id = (SELECT society_id FROM users WHERE auth_id = auth.uid()));
 
 CREATE POLICY rides_delete ON rides FOR DELETE
   USING (driver_id = (SELECT id FROM users WHERE auth_id = auth.uid()));

@@ -30,7 +30,7 @@ CREATE POLICY "reviews_update_own" ON reviews FOR UPDATE USING (
 -- Vendors table is read-only from app; updates via backend admin dashboard only
 CREATE POLICY "vendors_insert_never" ON vendors FOR INSERT WITH CHECK (false);
 CREATE POLICY "vendors_update_never" ON vendors FOR UPDATE WITH CHECK (false);
-CREATE POLICY "vendors_delete_never" ON vendors FOR DELETE WITH CHECK (false);
+CREATE POLICY "vendors_delete_never" ON vendors FOR DELETE USING (false);
 
 -- Appeals: Only vendors can create own appeals
 CREATE POLICY "appeals_insert_own" ON appeals FOR INSERT WITH CHECK (

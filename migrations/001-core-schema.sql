@@ -86,7 +86,7 @@ ALTER TABLE appeals ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "users_select_own" ON users FOR SELECT USING (auth_id = auth.uid());
 CREATE POLICY "vendors_select_by_society" ON vendors FOR SELECT USING (
   (SELECT society_id FROM users WHERE auth_id = auth.uid()) IS NULL
-  OR societies @> ARRAY[(SELECT society_id FROM users WHERE auth_id = auth.uid())]::UUID[]
+  OR societies @> jsonb_build_array((SELECT society_id FROM users WHERE auth_id = auth.uid()))
 );
 CREATE POLICY "bookings_select_own" ON bookings FOR SELECT USING (
   resident_id = (SELECT id FROM users WHERE auth_id = auth.uid())

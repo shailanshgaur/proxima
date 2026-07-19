@@ -29,10 +29,14 @@ CREATE POLICY products_select ON products FOR SELECT
   );
 
 CREATE POLICY products_insert ON products FOR INSERT
-  WITH CHECK (seller_id = (SELECT id FROM users WHERE auth_id = auth.uid()));
+  WITH CHECK (
+    seller_id = (SELECT id FROM users WHERE auth_id = auth.uid())
+    AND society_id = (SELECT society_id FROM users WHERE auth_id = auth.uid())
+  );
 
 CREATE POLICY products_update ON products FOR UPDATE
-  USING (seller_id = (SELECT id FROM users WHERE auth_id = auth.uid()));
+  USING (seller_id = (SELECT id FROM users WHERE auth_id = auth.uid()))
+  WITH CHECK (society_id = (SELECT society_id FROM users WHERE auth_id = auth.uid()));
 
 CREATE POLICY products_delete ON products FOR DELETE
   USING (seller_id = (SELECT id FROM users WHERE auth_id = auth.uid()));
