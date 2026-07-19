@@ -25,7 +25,10 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ user, onComplete
         setSocieties(rows);
         setSocietyId(rows[0]?.id ?? '');
       })
-      .catch((err) => setError(err instanceof Error ? err.message : 'Could not load societies'))
+      .catch(() => {
+        setSocieties([]);
+        setSocietyId('');
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -39,7 +42,7 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ user, onComplete
         user.id,
         name,
         flatNumber,
-        societyId,
+        societyId || null,
         user.email ?? '',
         phone
       );
@@ -94,14 +97,13 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ user, onComplete
           <label className="block">
             <span className="block text-xs font-semibold text-proxima-muted mb-1.5">Society</span>
             <select
-              required
               disabled={loading || societies.length === 0}
               value={societyId}
               onChange={(event) => setSocietyId(event.target.value)}
               className="w-full px-3 py-2.5 bg-proxima-base border border-proxima-border rounded-xl text-sm text-proxima-text outline-none focus:border-proxima-primary/60"
             >
               {societies.length === 0 ? (
-                <option value="">No societies available</option>
+                <option value="">Continue as founding resident</option>
               ) : (
                 societies.map((society) => (
                   <option key={society.id} value={society.id}>
@@ -137,9 +139,15 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ user, onComplete
             </label>
           </div>
 
+          {societies.length === 0 && !loading && (
+            <p className="text-xs text-proxima-muted leading-relaxed">
+              Society setup is still being prepared. You can enter now and we will attach your society once it is available.
+            </p>
+          )}
+
           <button
             type="submit"
-            disabled={saving || loading || !societyId}
+            disabled={saving || loading}
             className="w-full py-3 bg-proxima-primary hover:brightness-110 text-white text-sm font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? 'Creating pass...' : 'Enter Proxima'}

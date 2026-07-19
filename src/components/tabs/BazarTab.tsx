@@ -44,7 +44,7 @@ export const BazarTab: React.FC<BazarTabProps> = ({ profile }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title.trim() || !form.price) return;
+    if (!profile.society_id || !form.title.trim() || !form.price) return;
     setSubmitting(true);
     try {
       const newProduct = await productService.createProduct({
@@ -81,10 +81,11 @@ export const BazarTab: React.FC<BazarTabProps> = ({ profile }) => {
           </p>
         </div>
         <button
-          onClick={() => setShowForm(true)}
-          className="shrink-0 px-4 py-2.5 bg-proxima-primary hover:brightness-110 glow-amber-active text-white text-sm font-semibold rounded-xl transition-all"
+          onClick={() => profile.society_id && setShowForm(true)}
+          disabled={!profile.society_id}
+          className="shrink-0 px-4 py-2.5 bg-proxima-primary hover:brightness-110 glow-amber-active text-white text-sm font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          + Post a Listing
+          {profile.society_id ? '+ Post a Listing' : 'Society setup pending'}
         </button>
       </div>
 

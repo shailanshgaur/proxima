@@ -2,7 +2,9 @@ import { supabase } from './supabaseClient';
 import { Ride } from '../types';
 
 export const rideService = {
-  async getRides(societyId: string): Promise<Ride[]> {
+  async getRides(societyId: string | null): Promise<Ride[]> {
+    if (!societyId) return [];
+
     const { data, error } = await supabase
       .from('rides')
       .select('*')

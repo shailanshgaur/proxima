@@ -45,7 +45,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({ profile }) => {
           residentId={profile.user_id}
           residentPhone={profile.email}
           flatNumber={profile.flat_number ?? ''}
-          societyId={profile.society_id}
+          societyId={profile.society_id ?? ''}
           onBack={() => setSelectedVendor(null)}
           onSuccess={() => setSelectedVendor(null)}
         />

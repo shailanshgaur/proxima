@@ -56,10 +56,12 @@ const mockVendors: Vendor[] = [
 ];
 
 export const vendorService = {
-  async getVendorsBySociety(societyId: string): Promise<Vendor[]> {
+  async getVendorsBySociety(societyId: string | null): Promise<Vendor[]> {
     if (process.env.NODE_ENV === 'development') {
       return mockVendors;
     }
+
+    if (!societyId) return [];
 
     const { data, error } = await supabase
       .from('vendors')
@@ -99,7 +101,9 @@ export const vendorService = {
     return data || [];
   },
 
-  async searchVendorsByCategory(societyId: string, category: string): Promise<Vendor[]> {
+  async searchVendorsByCategory(societyId: string | null, category: string): Promise<Vendor[]> {
+    if (!societyId) return [];
+
     const { data, error } = await supabase
       .from('vendors')
       .select('*')

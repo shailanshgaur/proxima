@@ -83,7 +83,7 @@ export const authService = {
     };
   },
 
-  async createProfile(authId: string, name: string, flatNumber: string, societyId: string, email: string, phone: string): Promise<ResidentProfile> {
+  async createProfile(authId: string, name: string, flatNumber: string, societyId: string | null, email: string, phone: string): Promise<ResidentProfile> {
     if (!name.trim() || name.trim().length < 2) throw new Error('Name must be at least 2 characters');
     if (!flatNumber.trim()) throw new Error('Flat number required');
     if (!phone.trim() || phone.replace(/\D/g, '').length < 10) throw new Error('Valid phone number required');
@@ -93,7 +93,7 @@ export const authService = {
       name: name.trim(),
       phone: phone.replace(/\D/g, ''),
       flat_number: flatNumber.trim().toUpperCase(),
-      society_id: societyId,
+      society_id: societyId || null,
       is_admin: false,
     }).select().single();
 

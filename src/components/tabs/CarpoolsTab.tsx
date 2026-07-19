@@ -30,6 +30,7 @@ export const CarpoolsTab: React.FC<CarpoolsTabProps> = ({ profile }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!profile.society_id) return;
     setSubmitting(true);
     try {
       const newRide = await rideService.createRide({
@@ -70,10 +71,11 @@ export const CarpoolsTab: React.FC<CarpoolsTabProps> = ({ profile }) => {
           </p>
         </div>
         <button
-          onClick={() => setShowForm(true)}
-          className="px-4 py-2 bg-proxima-secondary hover:brightness-110 text-proxima-base text-sm font-semibold rounded-xl transition-all glow-blue-active"
+          onClick={() => profile.society_id && setShowForm(true)}
+          disabled={!profile.society_id}
+          className="px-4 py-2 bg-proxima-secondary hover:brightness-110 text-proxima-base text-sm font-semibold rounded-xl transition-all glow-blue-active disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          + Offer a Ride
+          {profile.society_id ? '+ Offer a Ride' : 'Society setup pending'}
         </button>
       </div>
 

@@ -116,7 +116,7 @@ export interface ResidentProfile {
   flat_number: string;
   name: string;
   email: string;
-  society_id: string;
+  society_id: string | null;
   society_name?: string;
   avatar_url?: string;
   portal_id: string;

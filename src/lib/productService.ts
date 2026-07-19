@@ -2,7 +2,9 @@ import { supabase } from './supabaseClient';
 import { Product } from '../types';
 
 export const productService = {
-  async getProducts(societyId: string): Promise<Product[]> {
+  async getProducts(societyId: string | null): Promise<Product[]> {
+    if (!societyId) return [];
+
     const { data, error } = await supabase
       .from('products')
       .select('*')
