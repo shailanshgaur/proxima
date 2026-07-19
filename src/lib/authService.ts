@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import { ResidentProfile } from '../types';
+import { ResidentProfile, Society } from '../types';
 
 export const authService = {
   // SMTP CONFIGURATION REQUIRED FOR PRODUCTION
@@ -32,6 +32,21 @@ export const authService = {
     return session;
   },
 
+  async getCurrentAuthUser() {
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+  },
+
+  async getSocieties(): Promise<Society[]> {
+    const { data, error } = await supabase
+      .from('societies')
+      .select('id, name, location, created_at')
+      .order('name');
+
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  },
+
   async getCurrentProfile(): Promise<ResidentProfile | null> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
@@ -57,13 +72,15 @@ export const authService = {
     };
   },
 
-  async createProfile(authId: string, name: string, flatNumber: string, societyId: string, email: string): Promise<ResidentProfile> {
+  async createProfile(authId: string, name: string, flatNumber: string, societyId: string, email: string, phone: string): Promise<ResidentProfile> {
     if (!name.trim() || name.trim().length < 2) throw new Error('Name must be at least 2 characters');
     if (!flatNumber.trim()) throw new Error('Flat number required');
+    if (!phone.trim() || phone.replace(/\D/g, '').length < 10) throw new Error('Valid phone number required');
 
     const { data, error } = await supabase.from('users').insert({
       auth_id: authId,
       name: name.trim(),
+      phone: phone.replace(/\D/g, ''),
       flat_number: flatNumber.trim().toUpperCase(),
       society_id: societyId,
       is_admin: false,
