@@ -1,8 +1,30 @@
 import { supabase } from './supabaseClient';
 import { Ride } from '../types';
 
+const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+const demoRides: Ride[] = [
+  {
+    id: 'demo-ride-1',
+    driver_id: 'demo-driver-1',
+    society_id: 'demo-society',
+    origin: 'Lotus Zing Gate 2',
+    destination: 'Noida Sector 142 Metro',
+    departure_date: tomorrow,
+    departure_time: '09:15',
+    seats_available: 2,
+    fuel_split: 60,
+    vehicle_model: 'White Swift',
+    no_smoking: true,
+    ev_only: false,
+    status: 'open',
+    created_at: new Date().toISOString(),
+  },
+];
+
 export const rideService = {
   async getRides(societyId: string | null): Promise<Ride[]> {
+    if (societyId === 'demo-society') return demoRides;
     if (!societyId) return [];
 
     const { data, error } = await supabase
@@ -18,6 +40,8 @@ export const rideService = {
   },
 
   async getMyRides(driverId: string): Promise<Ride[]> {
+    if (driverId === 'demo-user') return [];
+
     const { data, error } = await supabase
       .from('rides')
       .select('*')

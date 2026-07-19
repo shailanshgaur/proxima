@@ -1,11 +1,11 @@
 import React from 'react';
 import { ResidentProfile, Tab } from '../../types';
-import { authService } from '../../lib/authService';
 
 interface SidebarProps {
   profile: ResidentProfile;
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
+  onSignOut: () => void;
 }
 
 const NAV_ITEMS: { id: Tab; label: string; badge?: string }[] = [
@@ -17,7 +17,7 @@ const NAV_ITEMS: { id: Tab; label: string; badge?: string }[] = [
   { id: 'admin',     label: 'Admin Desk' },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ profile, activeTab, onTabChange }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ profile, activeTab, onTabChange, onSignOut }) => {
   const initials = profile.name
     .split(' ')
     .slice(0, 2)
@@ -39,7 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profile, activeTab, onTabChang
               PROXIMA
             </p>
             <p className="text-[10px] font-semibold text-proxima-muted mt-0.5 tracking-wider uppercase">
-              Resident Elite
+              {profile.is_demo ? 'Preview Mode' : 'Resident Elite'}
             </p>
           </div>
           <div
@@ -72,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profile, activeTab, onTabChang
         {/* Status badge */}
         <div className="flex items-center gap-1.5">
           <span className="text-proxima-primary text-xs font-semibold">✓</span>
-          <span className="text-xs font-medium text-proxima-primary">Verified Resident</span>
+          <span className="text-xs font-medium text-proxima-primary">{profile.is_demo ? 'Preview Resident' : 'Verified Resident'}</span>
         </div>
 
         {/* Member since + vehicles row */}
@@ -131,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profile, activeTab, onTabChang
       {/* Footer */}
       <div className="px-3 py-3 border-t border-proxima-border">
         <button
-          onClick={() => authService.signOut()}
+          onClick={onSignOut}
           className="w-full px-3 rounded-lg text-sm font-medium text-proxima-muted hover:text-red-400 hover:bg-red-500/10 transition-all text-left cursor-pointer border border-transparent hover:border-red-500/20"
           style={{ minHeight: '44px' }}
         >

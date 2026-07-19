@@ -18,6 +18,7 @@ function getInitials(name: string): string {
 interface ServicesTabProps { profile: ResidentProfile; }
 
 export const ServicesTab: React.FC<ServicesTabProps> = ({ profile }) => {
+  const isPreview = profile.is_demo === true;
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -192,10 +193,11 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({ profile }) => {
                     WhatsApp
                   </a>
                   <button
-                    onClick={() => setSelectedVendor(vendor)}
-                    className="flex-1 py-2 bg-proxima-primary hover:bg-proxima-primary-dim text-white text-xs font-semibold rounded-xl transition-all"
+                    onClick={() => !isPreview && setSelectedVendor(vendor)}
+                    disabled={isPreview}
+                    className="flex-1 py-2 bg-proxima-primary hover:bg-proxima-primary-dim text-white text-xs font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Book {vendor.name.split(' ')[0]}
+                    {isPreview ? 'Preview only' : `Book ${vendor.name.split(' ')[0]}`}
                   </button>
                 </div>
               </motion.div>

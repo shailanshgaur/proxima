@@ -25,7 +25,7 @@ export const TopBar: React.FC<TopBarProps> = ({ profile }) => {
           className="w-2 h-2 rounded-full bg-proxima-success shrink-0"
           aria-hidden="true"
         />
-        <span className="text-xs text-proxima-muted">Connected</span>
+        <span className="text-xs text-proxima-muted">{profile.is_demo ? 'Preview' : 'Connected'}</span>
       </div>
       <div className="flex items-center gap-4 text-xs text-proxima-muted">
         {time && <span>{time}</span>}

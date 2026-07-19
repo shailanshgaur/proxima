@@ -6,6 +6,19 @@ import { AppShell } from './components/layout/AppShell';
 import { ResidentProfile } from './types';
 import { authService } from './lib/authService';
 
+const demoProfile: ResidentProfile = {
+  user_id: 'demo-user',
+  flat_number: 'DEMO-01',
+  name: 'Founding Resident',
+  email: 'preview@proxima.local',
+  society_id: 'demo-society',
+  society_name: 'Lotus Zing Preview',
+  portal_id: 'PXM-DEMO-01',
+  member_since: new Date().toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
+  is_admin: false,
+  is_demo: true,
+};
+
 export const App: React.FC = () => {
   const [profile, setProfile] = useState<ResidentProfile | null>(null);
   const [authUser, setAuthUser] = useState<User | null>(null);
@@ -35,7 +48,16 @@ export const App: React.FC = () => {
     );
   }
 
-  if (profile) return <AppShell profile={profile} />;
+  const handleSignOut = async () => {
+    if (profile?.is_demo) {
+      setProfile(null);
+      return;
+    }
+
+    await authService.signOut();
+  };
+
+  if (profile) return <AppShell profile={profile} onSignOut={handleSignOut} />;
   if (authUser) return <OnboardingPage user={authUser} onComplete={setProfile} />;
-  return <LoginPage />;
+  return <LoginPage onPreview={() => setProfile(demoProfile)} />;
 };

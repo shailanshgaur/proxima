@@ -122,6 +122,7 @@ export interface ResidentProfile {
   portal_id: string;
   member_since: string;
   is_admin: boolean;
+  is_demo?: boolean;
 }
 
 export type Tab = 'overview' | 'bazar' | 'carpools' | 'services' | 'profile' | 'admin';

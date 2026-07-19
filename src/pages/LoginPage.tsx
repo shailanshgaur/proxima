@@ -7,7 +7,11 @@ const getRedirectError = () => {
   return params.get('error_description') || params.get('error') || null;
 };
 
-export const LoginPage: React.FC = () => {
+interface LoginPageProps {
+  onPreview: () => void;
+}
+
+export const LoginPage: React.FC<LoginPageProps> = ({ onPreview }) => {
   const [loading, setLoading] = useState<'google' | 'email' | null>(null);
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState<string | null>(null);
@@ -140,6 +144,15 @@ export const LoginPage: React.FC = () => {
               {loading === 'email' ? 'Sending link...' : 'Email me a sign-in link'}
             </button>
           </form>
+
+          <button
+            type="button"
+            onClick={onPreview}
+            disabled={loading !== null}
+            className="w-full py-2.5 border border-proxima-border text-proxima-muted hover:text-proxima-text hover:bg-proxima-active text-sm font-semibold rounded-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            Preview the portal
+          </button>
 
           <p className="text-xs text-proxima-muted text-center leading-relaxed">
             By signing in, you confirm you are a verified occupant of a Proxima residential society.

@@ -57,7 +57,7 @@ const mockVendors: Vendor[] = [
 
 export const vendorService = {
   async getVendorsBySociety(societyId: string | null): Promise<Vendor[]> {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' || societyId === 'demo-society') {
       return mockVendors;
     }
 

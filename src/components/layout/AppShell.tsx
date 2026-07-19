@@ -11,6 +11,7 @@ import { AdminTab } from '../tabs/AdminTab';
 
 interface AppShellProps {
   profile: ResidentProfile;
+  onSignOut: () => void;
 }
 
 /* Mobile bottom nav — text labels only, no icons */
@@ -22,7 +23,7 @@ const BOTTOM_NAV: { id: Tab; label: string }[] = [
   { id: 'profile',   label: 'Profile' },
 ];
 
-export const AppShell: React.FC<AppShellProps> = ({ profile }) => {
+export const AppShell: React.FC<AppShellProps> = ({ profile, onSignOut }) => {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
 
   const renderTab = () => {
@@ -40,7 +41,7 @@ export const AppShell: React.FC<AppShellProps> = ({ profile }) => {
     <div className="flex h-screen bg-proxima-base overflow-hidden">
       {/* Sidebar — desktop only */}
       <div className="hidden md:flex">
-        <Sidebar profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />
+        <Sidebar profile={profile} activeTab={activeTab} onTabChange={setActiveTab} onSignOut={onSignOut} />
       </div>
 
       {/* Main content area */}
